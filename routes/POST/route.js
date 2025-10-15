@@ -23,10 +23,10 @@ exec.post("/", (req, res) => {
    run(cmd,input,res,id)
   } else {
     res.json(
-      JSON.stringify({
+     {
         error:
           "Only Go,C,C++,Java,Python and Javascript languages are supportted",
-      })
+      }
     );
   }
 });
