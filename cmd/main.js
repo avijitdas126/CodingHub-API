@@ -2,7 +2,6 @@ import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
 
-
 /**
  * Insert setbuf(stdout, NULL); at the start of the main function body.
  * Works for `int main(...)`, `void main(...)`, with brace on same line or next line.
