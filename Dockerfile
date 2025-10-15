@@ -1,23 +1,23 @@
 # Start with Alpine base
 FROM alpine:3.20
 
+# Set environment variables
+ENV JAVA_HOME=/usr/lib/jvm/java-17-openjdk
+ENV PATH=$PATH:$JAVA_HOME/bin
+
 # Install common tools and dependencies
 RUN apk add --no-cache \
     bash \
     curl \
     git \
     wget \
-    build-base \   # gcc, g++
+    build-base \
     python3 \
     py3-pip \
     openjdk17 \
     go \
     nodejs \
     npm
-
-# Set environment variables (optional)
-ENV JAVA_HOME=/usr/lib/jvm/java-17-openjdk
-ENV PATH=$PATH:$JAVA_HOME/bin
 
 # Verify installations
 RUN python3 --version && \
@@ -31,11 +31,15 @@ RUN python3 --version && \
 # Set working directory
 WORKDIR /app
 
-# Copy application files and install Node.js dependencies
+# Copy Node.js package files and install dependencies
 COPY package*.json ./
 RUN npm install
-# Copy the rest of the app
+
+# Copy the rest of the application
 COPY . .
+
+# Expose the port your app uses
 EXPOSE 8080
 
+# Start the application
 CMD ["npm", "start"]
