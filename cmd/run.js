@@ -35,7 +35,7 @@ export function run(cmd, input, res, id) {
     });
     setTimeout(() => {
       child.kill("SIGTERM");
-      if (!res.headersSent && isExce) {
+      if (!res.headersSent && !isExce) {
         res.json({ error: "Execution timeout" });
       }
     }, 5000);
