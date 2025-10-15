@@ -20,11 +20,7 @@ exec.post("/", (req, res) => {
   ) {
     const id = randomUUID();
     const cmd = setup(id, lang, code);
-   run(cmd,input,res)
-    
-
-    
-    
+   run(cmd,input,res,id)
   } else {
     res.json(
       JSON.stringify({
