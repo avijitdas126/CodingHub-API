@@ -3,7 +3,7 @@ import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
 
-export function run(cmd, input, res) {
+export function run(cmd, input, res, id) {
   try {
     console.log("Running:", cmd);
     let child = spawn(cmd, { shell: true, stdio: ["pipe", "pipe", "pipe"] });
