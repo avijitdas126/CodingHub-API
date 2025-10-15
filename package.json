@@ -4,11 +4,12 @@
   "description": "",
   "main": "main.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+     "start": "node main.js",
   },
   "keywords": [],
   "type":"module",
-  "start": "node main.js",
+ 
   "author": "",
   "license": "ISC",
   "dependencies": {
