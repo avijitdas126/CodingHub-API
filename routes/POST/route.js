@@ -10,23 +10,21 @@ export const exec = Router();
 exec.post("/", (req, res) => {
   let { lang, code, input } = req.body;
   if (
-    lang == "go" ||
-    lang == "c" ||
-    lang == "c++" ||
-    lang == "cpp" ||
-    lang == "java" ||
-    lang == "py" ||
-    lang == "js"
+    lang.startsWith("go") ||
+    lang.startsWith("c") ||
+    lang.startsWith("c++") ||
+    lang.startsWith("cpp") ||
+    lang.startsWith("java") ||
+    lang.startsWith("py") ||
+    lang.startsWith("js")
   ) {
     const id = randomUUID();
     const cmd = setup(id, lang, code);
-   run(cmd,input,res,id)
+    run(cmd, input, res, id);
   } else {
-    res.json(
-     {
-        error:
-          "Only Go,C,C++,Java,Python and Javascript languages are supportted",
-      }
-    );
+    res.json({
+      error:
+        "Only Go,C,C++,Java,Python and Javascript languages are supportted",
+    });
   }
 });

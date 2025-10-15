@@ -16,13 +16,13 @@ export function webSocket(ws){
     }
     let { lang, type, code, input } = data;
     if (
-      (lang == "go" ||
-        lang == "c" ||
-        lang == "c++" ||
-        lang == "cpp" ||
-        lang == "java" ||
-        lang == "py" ||
-        lang == "js") &&
+      (lang.startsWith("go") ||
+        lang.startsWith("c") ||
+        lang.startsWith("c++") ||
+        lang.startsWith("cpp") ||
+        lang.startsWith("java") ||
+        lang.startsWith("py") ||
+        lang.startsWith("js")) &&
       type == "run"
     ) {
       // Kill previous process if still running
