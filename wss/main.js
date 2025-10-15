@@ -44,12 +44,13 @@ export function webSocket(ws){
       });
       child.on("close", (code) => {
         ws.send(JSON.stringify({ type: "exit", code }));
+        cleanupTmp();
         child = null;
       });
     } // 💬 handle real-time input
     else if (type === "input") {
       if (child) {
-        child.stdin.write(input + "\n");
+        if (child) child.stdin.write(input.replace(/,/g, " ") + "\n");
       } else {
         ws.send(
           JSON.stringify({ type: "error", data: "No program is running" })
@@ -58,6 +59,7 @@ export function webSocket(ws){
     } else if (type == "kill" && child) {
       child.kill("SIGTERM");
       ws.send(JSON.stringify({ type: "killed" }));
+       cleanupTmp();
       currentProcess = null;
     } else {
       ws.send(
@@ -73,3 +75,8 @@ export function webSocket(ws){
     console.log(`Client disconnected at ${id}`);
   });
 }
+
+  function cleanupTmp() {
+    const tmp = path.join(__dirname, `../tmp/${id}`);
+    if (fs.existsSync(tmp)) fs.rmSync(tmp, { recursive: true, force: true });
+  }

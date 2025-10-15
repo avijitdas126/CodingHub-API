@@ -88,10 +88,8 @@ export function setup(id, lang, code) {
   if (!is_exit) {
     fs.mkdirSync(tmp, { recursive: true });
   }
-  if (lang.startsWith("c++") || lang.startsWith("cpp")) {
+  if (lang.startsWith("c++") || lang.startsWith("cpp") || lang.startsWith("c")) {
     tmp_file = path.join(tmp, `${id}.cpp`);
-  } else if (lang.startsWith("c")) {
-    tmp_file = path.join(tmp, `${id}.c`);
   } else if (lang.startsWith("java")) {
     mainClass = find_class_java(code);
     tmp_file = path.join(tmp, `${mainClass}.java`);
@@ -112,10 +110,8 @@ export function setup(id, lang, code) {
 
 export function cmd(lang, id, mainClass = null) {
   let cmd = null;
-  if (lang.startsWith("c")) {
-    cmd = `cd tmp/${id} && gcc ${id}.c -o mainc && ./mainc`;
-  } else if (lang.startsWith("c++") || lang.startsWith("cpp")) {
-    cmd = `cd tmp/${id} && g++ ${id}.cpp -o maincpp && ./maincpp`;
+  if (lang.startsWith("c++") || lang.startsWith("cpp") || lang.startsWith("c")) {
+    cmd = `cd tmp/${id} && g++ ${id}.cpp -o maincpp && maincpp`;
   } else if (lang.startsWith("java")) {
     cmd = `cd tmp/${id} && javac ${mainClass}.java && java ${mainClass}`;
   } else if (lang.startsWith("py")) {

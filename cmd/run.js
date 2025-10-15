@@ -5,44 +5,45 @@ import { fileURLToPath } from "url";
 
 export function run(cmd, input, res, id) {
   try {
-    let isExce=false
+    const __filename = fileURLToPath(import.meta.url);
+    const __dirname = path.dirname(__filename);
+    const tmp = path.join(__dirname, `../../tmp/${id}`);
+
     console.log("Running:", cmd);
-    let child = spawn(cmd, { shell: true, stdio: ["pipe", "pipe", "pipe"] });
+    const child = spawn(cmd, { shell: true, stdio: ["pipe", "pipe", "pipe"] });
+
     let output = "";
     let errorOutput = "";
-    child.stdout.on("data", (data) => {
-      console.log("stdout ", data.toString());
-      output += data.toString();
-    });
-    child.stderr.on("data", (data) => {
-      console.log("stderr ", data.toString());
-      errorOutput += data.toString();
-    });
+
+    child.stdout.on("data", (data) => (output += data.toString()));
+    child.stderr.on("data", (data) => (errorOutput += data.toString()));
+
+    // handle stdin
     if (input && input.trim() !== "") {
-      let inA = input.split(",");
-      inA.map((e) => {
-        child.stdin.write(e + "\n");
-      });
+      child.stdin.write(input.replace(/,/g, " ") + "\n");
     }
-    child.stdin.end(); // close stdin so program doesn't hang waiting for more input
+    child.stdin.end();
+
+    // timeout
+    const timer = setTimeout(() => {
+      child.kill("SIGTERM");
+      res.json({ error: "Execution timeout" });
+      // cleanup
+      if (fs.existsSync(tmp)) fs.rmSync(tmp, { recursive: true, force: true });
+    }, 10000);
+
     child.on("close", (code) => {
-      isExce=true
+      clearTimeout(timer);
       if (errorOutput && !output) {
         res.json({ error: errorOutput });
       } else {
         res.json({ output });
       }
+      // cleanup
+      if (fs.existsSync(tmp)) fs.rmSync(tmp, { recursive: true, force: true });
+      console.log(`Tmp folder deleted: ${tmp}`);
     });
-    setTimeout(() => {
-      child.kill("SIGTERM");
-    }, 10000);
-  } catch (error) {
+  } catch (err) {
     res.json({ error: err.message });
-  } finally {
-    const __filename = fileURLToPath(import.meta.url);
-    const __dirname = path.dirname(__filename);
-    const tmp = path.join(__dirname, `../../tmp/${id}`);
-    fs.rmSync(tmp, { recursive: true, force: true });
-    console.log(`Tmp folder is deleted successfully ${tmp}`);
   }
 }
