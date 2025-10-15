@@ -14,7 +14,7 @@ export function run(cmd, input, res, id) {
 
     let output = "";
     let errorOutput = "";
-
+let isResponded = false;
     child.stdout.on("data", (data) => (output += data.toString()));
     child.stderr.on("data", (data) => (errorOutput += data.toString()));
 
@@ -26,11 +26,14 @@ export function run(cmd, input, res, id) {
 
     // timeout
     const timer = setTimeout(() => {
-      child.kill("SIGTERM");
-      res.json({ error: "Execution timeout" });
+       if (!isResponded) {
+    child.kill("SIGTERM");
+    res.json({ error: "Execution timeout" });
+    isResponded = true;
+  }
       // cleanup
       if (fs.existsSync(tmp)) fs.rmSync(tmp, { recursive: true, force: true });
-    }, 10000);
+    }, 20000);
 
     child.on("close", (code) => {
       clearTimeout(timer);
