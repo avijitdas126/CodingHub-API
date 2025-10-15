@@ -28,7 +28,7 @@ let isResponded = false;
     const timer = setTimeout(() => {
        if (!isResponded) {
     child.kill("SIGTERM");
-    res.json({ error: "Execution timeout" });
+   // res.json({ error: "Execution timeout" });
     isResponded = true;
   }
       // cleanup
