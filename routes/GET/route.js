@@ -3,7 +3,7 @@ export const health = Router();
 
  health.get("/", (req, res) => {
   res.json(
-    JSON.stringify({ status: 200, message: "Resquest handled successfully" })
+    { status: 200, message: "Resquest handled successfully" }
   );
 });
 
