@@ -89,14 +89,14 @@ export function setup(id, lang, code) {
     fs.mkdirSync(tmp, { recursive: true });
   }
   if (lang.startsWith("c++") || lang.startsWith("cpp")) {
-    tmp_file = path.join(tmp, `/${id}.cpp`);
+    tmp_file = path.join(tmp, `${id}.cpp`);
   } else if (lang.startsWith("c")) {
-    tmp_file = path.join(tmp, `/${id}.c`);
+    tmp_file = path.join(tmp, `${id}.c`);
   } else if (lang.startsWith("java")) {
     mainClass = find_class_java(code);
-    tmp_file = path.join(tmp, `/${mainClass}.java`);
+    tmp_file = path.join(tmp, `${mainClass}.java`);
   } else {
-    tmp_file = path.join(tmp, `/${id}.${lang}`);
+    tmp_file = path.join(tmp, `${id}.${lang}`);
   }
   // writing data of file
   let cs = fs.createWriteStream(tmp_file);
@@ -113,9 +113,9 @@ export function setup(id, lang, code) {
 export function cmd(lang, id, mainClass = null) {
   let cmd = null;
   if (lang.startsWith("c")) {
-    cmd = `cd tmp/${id} && gcc ${id}.c -o mainc && mainc`;
+    cmd = `cd tmp/${id} && gcc ${id}.c -o mainc && ./mainc`;
   } else if (lang.startsWith("c++") || lang.startsWith("cpp")) {
-    cmd = `cd tmp/${id} && gcc ${id}.c -o mainc && mainc`;
+    cmd = `cd tmp/${id} && g++ ${id}.cpp -o maincpp && ./maincpp`;
   } else if (lang.startsWith("java")) {
     cmd = `cd tmp/${id} && javac ${mainClass}.java && java ${mainClass}`;
   } else if (lang.startsWith("py")) {
