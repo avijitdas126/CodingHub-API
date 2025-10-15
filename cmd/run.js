@@ -5,6 +5,7 @@ import { fileURLToPath } from "url";
 
 export function run(cmd, input, res, id) {
   try {
+    let isExce=false
     console.log("Running:", cmd);
     let child = spawn(cmd, { shell: true, stdio: ["pipe", "pipe", "pipe"] });
     let output = "";
@@ -25,6 +26,7 @@ export function run(cmd, input, res, id) {
     }
     child.stdin.end(); // close stdin so program doesn't hang waiting for more input
     child.on("close", (code) => {
+      isExce=true
       if (errorOutput && !output) {
         res.json({ error: errorOutput });
       } else {
@@ -33,7 +35,7 @@ export function run(cmd, input, res, id) {
     });
     setTimeout(() => {
       child.kill("SIGTERM");
-      if (!res.headersSent) {
+      if (!res.headersSent && isExce) {
         res.json({ error: "Execution timeout" });
       }
     }, 5000);
