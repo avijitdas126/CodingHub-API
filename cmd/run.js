@@ -33,7 +33,7 @@ let isResponded = false;
   }
       // cleanup
       if (fs.existsSync(tmp)) fs.rmSync(tmp, { recursive: true, force: true });
-    }, 20000);
+    }, 60000);
 
     child.on("close", (code) => {
       clearTimeout(timer);
