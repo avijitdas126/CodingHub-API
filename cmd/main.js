@@ -111,7 +111,7 @@ export function setup(id, lang, code) {
 export function cmd(lang, id, mainClass = null) {
   let cmd = null;
   if (lang.startsWith("c++") || lang.startsWith("cpp") || lang.startsWith("c")) {
-    cmd = `cd tmp/${id} && g++ ${id}.cpp -o maincpp && maincpp`;
+    cmd = `cd tmp/${id} && g++ ${id}.cpp -o ./maincpp && ./maincpp`;
   } else if (lang.startsWith("java")) {
     cmd = `cd tmp/${id} && javac ${mainClass}.java && java ${mainClass}`;
   } else if (lang.startsWith("py")) {
