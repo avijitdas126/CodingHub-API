@@ -22,7 +22,8 @@ export function webSocket(ws){
         lang.startsWith("cpp") ||
         lang.startsWith("java") ||
         lang.startsWith("py") ||
-        lang.startsWith("js")) &&
+        lang.startsWith("js") ||
+      lang.startsWith("ts")) &&
       type == "run"
     ) {
       // Kill previous process if still running
@@ -65,7 +66,7 @@ export function webSocket(ws){
       ws.send(
         JSON.stringify({
           error:
-            "Only Go,C,C++,Java,Python and Javascript languages are supportted",
+            "Only Go,C,C++,Java,Python,Typescript and Javascript languages are supportted",
         })
       );
     }

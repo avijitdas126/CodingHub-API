@@ -16,7 +16,8 @@ exec.post("/", (req, res) => {
     lang.startsWith("cpp") ||
     lang.startsWith("java") ||
     lang.startsWith("py") ||
-    lang.startsWith("js")
+    lang.startsWith("js")  ||
+    lang.startsWith("ts")
   ) {
     const id = randomUUID();
     const cmd = setup(id, lang, code);
@@ -24,7 +25,7 @@ exec.post("/", (req, res) => {
   } else {
     res.json({
       error:
-        "Only Go,C,C++,Java,Python and Javascript languages are supportted",
+        "Only Go,C,C++,Java,Python,Typescript and Javascript languages are supportted",
     });
   }
 });
