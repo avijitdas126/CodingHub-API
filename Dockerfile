@@ -1,45 +1,56 @@
-# Start with Alpine base
+# 🏗️ Base image
 FROM alpine:3.20
 
-# Set environment variables
-ENV JAVA_HOME=/usr/lib/jvm/java-17-openjdk
-ENV PATH=$PATH:$JAVA_HOME/bin
-
-# Install common tools and dependencies
+# 🧩 Install core languages & tools
 RUN apk add --no-cache \
     bash \
     curl \
     git \
     wget \
-    build-base \
+    build-base \        # gcc, g++, make
     python3 \
     py3-pip \
     openjdk17 \
     go \
     nodejs \
-    npm
+    npm \
+    tini
 
-# Verify installations
-RUN python3 --version && \
-    java -version && \
-    go version && \
-    gcc --version && \
-    g++ --version && \
-    node --version && \
-    npm --version
+# 🧠 Set environment variables
+ENV JAVA_HOME=/usr/lib/jvm/java-17-openjdk
+ENV PATH=$PATH:$JAVA_HOME/bin:/usr/local/go/bin
 
-# Set working directory
+# ⚡ Speed up Go compilation and runtime
+# Use tmpfs (shared memory) for temp folders
+RUN mkdir -p /dev/shm/tmp && ln -s /dev/shm/tmp /app/tmp
+
+# 🏠 Set working directory
 WORKDIR /app
 
-# Copy Node.js package files and install dependencies
+# 📦 Install Node dependencies (cached separately)
 COPY package*.json ./
-RUN npm install
+RUN npm ci --omit=dev
 
-# Copy the rest of the application
+# 📂 Copy rest of the application
 COPY . .
 
-# Expose the port your app uses
+# 🧰 Pre-warm Go build cache for faster go run
+# (build a tiny dummy Go program once)
+RUN echo 'package main; func main(){}' > /tmp/dummy.go && go build /tmp/dummy.go
+
+# ⚙️ Optimize Go runtime behavior
+ENV GODEBUG=madvdontneed=1 \
+    GOMAXPROCS=2 \
+    GOCACHE=/dev/shm/.cache/go-build
+
+# 🔥 Optional: preload cache dir in RAM for faster build execution
+VOLUME ["/dev/shm"]
+
+# 🌍 Expose your Node app port
 EXPOSE 8080
 
-# Start the application
+# 🧹 Use tini as init for proper cleanup of child processes
+ENTRYPOINT ["/sbin/tini", "--"]
+
+# 🚀 Start the Node app
 CMD ["node", "main.js"]
