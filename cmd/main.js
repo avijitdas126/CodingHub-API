@@ -120,6 +120,8 @@ export function cmd(lang, id, mainClass = null) {
     cmd = `cd tmp/${id} && go build ${id}.go && ./${id}`;
   } else if (lang.startsWith("js")) {
     cmd = `cd tmp/${id} && node ${id}.js`;
+  } else if(lang.startsWith("ts")){
+    cmd = `cd tmp/${id} && npx tsx ${id}.ts`;
   }
   return cmd;
 }
