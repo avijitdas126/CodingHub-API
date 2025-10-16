@@ -16,39 +16,39 @@ RUN apk add --no-cache \
     npm \
     tini
 
+# 🏠 Set working directory (creates /app automatically)
+WORKDIR /app
+
+# ⚡ Speed up Go compilation and runtime using RAM
+RUN mkdir -p /dev/shm/tmp && ln -s /dev/shm/tmp /app/tmp
+
 # 🧠 Set environment variables
 ENV JAVA_HOME=/usr/lib/jvm/java-17-openjdk
 ENV PATH=$PATH:$JAVA_HOME/bin:/usr/local/go/bin
 
-# ⚡ Speed up Go compilation and runtime
-RUN mkdir -p /dev/shm/tmp && ln -s /dev/shm/tmp /app/tmp
-
-# 🏠 Set working directory
-WORKDIR /app
-
-# 📦 Install Node dependencies (cached separately)
+# 📦 Install Node dependencies
 COPY package*.json ./
 RUN npm ci --omit=dev
 
-# 📂 Copy rest of the application
+# 📂 Copy app files
 COPY . .
 
-# 🧰 Pre-warm Go build cache for faster go run
+# 🧰 Pre-warm Go build cache
 RUN echo 'package main; func main(){}' > /tmp/dummy.go && go build /tmp/dummy.go
 
-# ⚙️ Optimize Go runtime behavior
+# ⚙️ Optimize Go runtime
 ENV GODEBUG=madvdontneed=1 \
     GOMAXPROCS=2 \
     GOCACHE=/dev/shm/.cache/go-build
 
-# 🔥 Optional: preload cache dir in RAM for faster build execution
+# 🔥 Use tmpfs for Go build cache & tmp dir
 VOLUME ["/dev/shm"]
 
-# 🌍 Expose your Node app port
+# 🌍 Expose app port
 EXPOSE 8080
 
-# 🧹 Use tini as init for proper cleanup of child processes
+# 🧹 Proper init handling
 ENTRYPOINT ["/sbin/tini", "--"]
 
-# 🚀 Start the Node app
+# 🚀 Start Node.js app
 CMD ["node", "main.js"]
