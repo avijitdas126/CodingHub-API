@@ -7,7 +7,7 @@ RUN apk add --no-cache \
     curl \
     git \
     wget \
-    build-base \        # gcc, g++, make
+    build-base \
     python3 \
     py3-pip \
     openjdk17 \
@@ -21,7 +21,6 @@ ENV JAVA_HOME=/usr/lib/jvm/java-17-openjdk
 ENV PATH=$PATH:$JAVA_HOME/bin:/usr/local/go/bin
 
 # ⚡ Speed up Go compilation and runtime
-# Use tmpfs (shared memory) for temp folders
 RUN mkdir -p /dev/shm/tmp && ln -s /dev/shm/tmp /app/tmp
 
 # 🏠 Set working directory
@@ -35,7 +34,6 @@ RUN npm ci --omit=dev
 COPY . .
 
 # 🧰 Pre-warm Go build cache for faster go run
-# (build a tiny dummy Go program once)
 RUN echo 'package main; func main(){}' > /tmp/dummy.go && go build /tmp/dummy.go
 
 # ⚙️ Optimize Go runtime behavior
