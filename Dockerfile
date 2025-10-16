@@ -20,7 +20,8 @@ RUN apk add --no-cache \
 WORKDIR /app
 
 # ⚡ Speed up Go compilation and runtime using RAM
-RUN mkdir -p /dev/shm/tmp && ln -s /dev/shm/tmp /app/tmp
+
+RUN mkdir -p /dev/shm/tmp && mkdir -p /app/tmp && ln -sf /dev/shm/tmp /app/tmp
 
 # 🧠 Set environment variables
 ENV JAVA_HOME=/usr/lib/jvm/java-17-openjdk
