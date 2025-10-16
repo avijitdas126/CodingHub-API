@@ -117,7 +117,7 @@ export function cmd(lang, id, mainClass = null) {
   } else if (lang.startsWith("py")) {
     cmd = `cd tmp/${id} && python -u ${id}.py`;
   } else if (lang.startsWith("go")) {
-    cmd = `cd tmp/${id} && go build ${id}.go -o maingo && ./maingo`;
+    cmd = `cd tmp/${id} && go build ${id}.go && ./${id}`;
   } else if (lang.startsWith("js")) {
     cmd = `cd tmp/${id} && node ${id}.js`;
   }
